@@ -90,7 +90,9 @@ public class ConcurrentGUI extends JFrame {
                 /*
                  * Use increment policy to "increment" count
                  * */
-                this.count = this.incrementOperation.apply(this.count);
+                synchronized (this) {
+                    this.count = this.incrementOperation.apply(this.count);
+                }
                 final String toWrite = Integer.toString(this.count);
                 SwingUtilities.invokeLater(() -> ConcurrentGUI.this.counterLabel.setText(toWrite));
                 try {
