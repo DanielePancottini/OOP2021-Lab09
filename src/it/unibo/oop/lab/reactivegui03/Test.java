@@ -10,10 +10,10 @@ public final class Test {
     }
 
     /**
-     * 
+     *
      * @param args
      *            unused
-     * 
+     *
      */
     public static void main(final String... args) {
         new AnotherConcurrentGUI().startThreads();

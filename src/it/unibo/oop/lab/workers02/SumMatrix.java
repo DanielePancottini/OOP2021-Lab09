@@ -1,7 +1,7 @@
 package it.unibo.oop.lab.workers02;
 
 /**
- * 
+ *
  * An interfaced defining a sum for a matrix.
  *
  */

@@ -50,7 +50,7 @@ public final class ConcurrentGUI extends JFrame {
         stop.addActionListener(new ActionListener() {
             /**
              * event handler associated to action event on button stop.
-             * 
+             *
              * @param e
              *            the action event that will be handled by this listener
              */
@@ -69,13 +69,13 @@ public final class ConcurrentGUI extends JFrame {
     private class Agent implements Runnable {
         /*
          * Stop is volatile to ensure visibility. Look at:
-         * 
+         *
          * http://archive.is/9PU5N - Sections 17.3 and 17.4
-         * 
+         *
          * For more details on how to use volatile:
-         * 
+         *
          * http://archive.is/4lsKW
-         * 
+         *
          */
         private volatile boolean stop;
         private int counter;
@@ -88,11 +88,11 @@ public final class ConcurrentGUI extends JFrame {
                      * All the operations on the GUI must be performed by the
                      * Event-Dispatch Thread (EDT)!
                      */
-                    String toWrite = Integer.toString(this.counter);
+                    final String toWrite = Integer.toString(this.counter);
                     SwingUtilities.invokeAndWait(() ->
                             ConcurrentGUI.this.display.setText(toWrite)
                     );
-                    
+
                     this.counter++;
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {

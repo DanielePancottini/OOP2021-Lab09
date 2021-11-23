@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 /**
- * 
+ *
  * TestMatrix for worker 1.
  *
  */
@@ -18,7 +18,7 @@ public class TestListSumWithStreams {
     /**
      * SumList and its multithreaded implementation are given as reference
      * implementation of a software that sums the elements of a list.
-     * 
+     *
      * Note that it is often impossible to split the load in an exact equal
      * manner - that's not an issue normally, however.
      */

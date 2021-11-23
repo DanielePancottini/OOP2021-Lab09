@@ -5,14 +5,14 @@ import java.util.stream.IntStream;
 
 /**
  * This is an implementation using streams.
- * 
+ *
  */
 public final class MultiThreadedListSumWithStreams implements SumList {
 
     private final int nthread;
 
     /**
-     * 
+     *
      * @param nthread
      *            no. of thread performing the sum.
      */
@@ -28,7 +28,7 @@ public final class MultiThreadedListSumWithStreams implements SumList {
 
         /**
          * Build a new worker.
-         * 
+         *
          * @param list
          *            the list to sum
          * @param startpos
@@ -53,7 +53,7 @@ public final class MultiThreadedListSumWithStreams implements SumList {
 
         /**
          * Returns the result of summing up the integers within the list.
-         * 
+         *
          * @return the sum of every element in the array
          */
         public long getResult() {
