@@ -14,7 +14,7 @@ import javax.swing.WindowConstants;
 /**
  * Simple Counter GUI with different operations (increment/decrement).
  * */
-public class ConcurrentGUI extends JFrame {
+public class ConcurrentGUIWithoutLambda extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
@@ -24,9 +24,9 @@ public class ConcurrentGUI extends JFrame {
     private final JLabel counterLabel = new JLabel("0");
 
     /**
-     * Builds a new {@link ConcurrentGUI}.
+     * Builds a new {@link ConcurrentGUIWithoutLambda}.
      * */
-    public ConcurrentGUI() {
+    public ConcurrentGUIWithoutLambda() {
         super();
         /*
          * Counter Agent Declaration
@@ -52,8 +52,22 @@ public class ConcurrentGUI extends JFrame {
         /*
          * Buttons Handlers
          * */
-        upButton.addActionListener((e) -> counterAgent.setIncrementOperation((count) -> count + 1));
-        downButton.addActionListener((e) -> counterAgent.setIncrementOperation((count) -> count - 1));
+        upButton.addActionListener((e) -> {
+            counterAgent.setIncrementOperation(new IncrementPolicy() {
+                @Override
+                public int increment(final int count) {
+                    return count + 1;
+                }
+            });
+        });
+        downButton.addActionListener((e) -> {
+            counterAgent.setIncrementOperation(new IncrementPolicy() {
+                @Override
+                public int increment(final int count) {
+                    return count - 1;
+                }
+            });
+        });
         stopButton.addActionListener((e) -> {
             counterAgent.stopAction();
             upButton.setEnabled(false);
@@ -65,8 +79,8 @@ public class ConcurrentGUI extends JFrame {
          * Configure frame with some settings
          * */
         this.getContentPane().add(panel);
-        this.setSize((int) (ConcurrentGUI.SCREEN_SIZE.width * ConcurrentGUI.WIDTH_FACTOR),
-                (int) (ConcurrentGUI.SCREEN_SIZE.height * ConcurrentGUI.HEIGHT_FACTOR));
+        this.setSize((int) (ConcurrentGUIWithoutLambda.SCREEN_SIZE.width * ConcurrentGUIWithoutLambda.WIDTH_FACTOR),
+                (int) (ConcurrentGUIWithoutLambda.SCREEN_SIZE.height * ConcurrentGUIWithoutLambda.HEIGHT_FACTOR));
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -75,10 +89,14 @@ public class ConcurrentGUI extends JFrame {
 
     }
 
+    private interface IncrementPolicy {
+        int increment(int count);
+    }
+
     private class Agent implements Runnable {
         private int count;
         private volatile boolean stop;
-        private Function<Integer, Integer> incrementOperation = getDefaultOperation();
+        private IncrementPolicy incrementOperation = getDefaultOperation();
 
         @Override
         public void run() {
@@ -87,10 +105,10 @@ public class ConcurrentGUI extends JFrame {
                  * Use increment policy to "increment" count
                  * */
                 synchronized (this) {
-                    this.count = this.incrementOperation.apply(this.count);
+                    this.count = this.incrementOperation.increment(this.count);
                 }
                 final String toWrite = Integer.toString(this.count);
-                SwingUtilities.invokeLater(() -> ConcurrentGUI.this.counterLabel.setText(toWrite));
+                SwingUtilities.invokeLater(() -> ConcurrentGUIWithoutLambda.this.counterLabel.setText(toWrite));
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -99,8 +117,13 @@ public class ConcurrentGUI extends JFrame {
             }
         }
 
-        private Function<Integer, Integer> getDefaultOperation() {
-            return (count) -> count;
+        private IncrementPolicy getDefaultOperation() {
+            return new IncrementPolicy() {
+                @Override
+                public int increment(final int count) {
+                    return count;
+                }
+            };
         }
 
         private boolean isStopped() {
@@ -113,7 +136,7 @@ public class ConcurrentGUI extends JFrame {
          *
          * @param incrementOperation increment policy for the counter
          * */
-        public synchronized void setIncrementOperation(final Function<Integer, Integer> incrementOperation) {
+        public synchronized void setIncrementOperation(final IncrementPolicy incrementOperation) {
             this.incrementOperation = incrementOperation;
         }
 
