@@ -2,7 +2,6 @@ package it.unibo.oop.lab.reactivegui02;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.function.Function;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -52,7 +51,7 @@ public class ConcurrentGUIWithoutLambda extends JFrame {
         /*
          * Buttons Handlers
          * */
-        upButton.addActionListener((e) -> {
+        upButton.addActionListener(e -> {
             counterAgent.setIncrementOperation(new IncrementPolicy() {
                 @Override
                 public int increment(final int count) {
@@ -60,7 +59,7 @@ public class ConcurrentGUIWithoutLambda extends JFrame {
                 }
             });
         });
-        downButton.addActionListener((e) -> {
+        downButton.addActionListener(e -> {
             counterAgent.setIncrementOperation(new IncrementPolicy() {
                 @Override
                 public int increment(final int count) {
@@ -68,7 +67,7 @@ public class ConcurrentGUIWithoutLambda extends JFrame {
                 }
             });
         });
-        stopButton.addActionListener((e) -> {
+        stopButton.addActionListener(e -> {
             counterAgent.stopAction();
             upButton.setEnabled(false);
             downButton.setEnabled(false);

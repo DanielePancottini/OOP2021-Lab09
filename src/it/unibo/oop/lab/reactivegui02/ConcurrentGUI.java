@@ -52,9 +52,9 @@ public class ConcurrentGUI extends JFrame {
         /*
          * Buttons Handlers
          * */
-        upButton.addActionListener((e) -> counterAgent.setIncrementOperation((count) -> count + 1));
-        downButton.addActionListener((e) -> counterAgent.setIncrementOperation((count) -> count - 1));
-        stopButton.addActionListener((e) -> {
+        upButton.addActionListener(e -> counterAgent.setIncrementOperation(count -> count + 1));
+        downButton.addActionListener(e -> counterAgent.setIncrementOperation(count -> count - 1));
+        stopButton.addActionListener(e -> {
             counterAgent.stopAction();
             upButton.setEnabled(false);
             downButton.setEnabled(false);
@@ -100,7 +100,7 @@ public class ConcurrentGUI extends JFrame {
         }
 
         private Function<Integer, Integer> getDefaultOperation() {
-            return (count) -> count;
+            return count -> count;
         }
 
         private boolean isStopped() {

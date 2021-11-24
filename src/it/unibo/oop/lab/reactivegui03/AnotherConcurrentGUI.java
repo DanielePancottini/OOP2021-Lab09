@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.IntFunction;
+import java.util.function.Function;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -61,15 +61,9 @@ public class AnotherConcurrentGUI extends JFrame {
         /*
          * Buttons Handlers
          * */
-        upButton.addActionListener((e) -> {
-            this.counterAgent.setIncrementOperation((count) -> ++count);
-        });
-        downButton.addActionListener((e) -> {
-            this.counterAgent.setIncrementOperation((count) -> --count);
-        });
-        stopButton.addActionListener((e) -> {
-            this.stopCounting();
-        });
+        upButton.addActionListener(e -> this.counterAgent.setIncrementOperation(count -> count + 1));
+        downButton.addActionListener(e -> this.counterAgent.setIncrementOperation(count -> count - 1));
+        stopButton.addActionListener(e -> this.stopCounting());
         /*
          * Add inner layout to content pane,
          * Configure frame with some settings
@@ -114,7 +108,7 @@ public class AnotherConcurrentGUI extends JFrame {
     private class Agent implements Runnable {
         private int count;
         private volatile boolean stop;
-        private IntFunction<Integer> incrementOperation = getDefaultOperation();
+        private Function<Integer, Integer> incrementOperation = getDefaultOperation();
 
         @Override
         public void run() {
@@ -122,7 +116,9 @@ public class AnotherConcurrentGUI extends JFrame {
                 /*
                  * Use increment policy to "increment" count
                  * */
-                this.count = this.incrementOperation.apply(this.count);
+                synchronized (this) {
+                    this.count = this.incrementOperation.apply(this.count);
+                }
                 final String toWrite = Integer.toString(this.count);
                 SwingUtilities.invokeLater(() -> AnotherConcurrentGUI.this.counterLabel.setText(toWrite));
                 try {
@@ -133,8 +129,8 @@ public class AnotherConcurrentGUI extends JFrame {
             }
         }
 
-        private IntFunction<Integer> getDefaultOperation() {
-            return (count) -> count;
+        private Function<Integer, Integer> getDefaultOperation() {
+            return count -> count;
         }
 
         private boolean isStopped() {
@@ -142,12 +138,12 @@ public class AnotherConcurrentGUI extends JFrame {
         }
 
         /**
-         * Sets the increment policy using an {@link IntFunction} interface,
+         * Sets the increment policy using an {@link Function} interface,
          * this method is thread safe.
          *
          * @param incrementOperation increment policy for the counter
          * */
-        public synchronized void setIncrementOperation(final IntFunction<Integer> incrementOperation) {
+        public synchronized void setIncrementOperation(final Function<Integer, Integer> incrementOperation) {
             this.incrementOperation = incrementOperation;
         }
 
