@@ -70,7 +70,7 @@ public class AnotherConcurrentGUI extends JFrame {
          * */
         this.getContentPane().add(panel);
         this.setSize((int) (AnotherConcurrentGUI.SCREEN_SIZE.width * AnotherConcurrentGUI.WIDTH_FACTOR),
-                     (int) (AnotherConcurrentGUI.SCREEN_SIZE.height * AnotherConcurrentGUI.HEIGHT_FACTOR));
+                (int) (AnotherConcurrentGUI.SCREEN_SIZE.height * AnotherConcurrentGUI.HEIGHT_FACTOR));
 
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
